@@ -29,7 +29,16 @@ injectDirs=''
 for i in $*; do
 	echo $i
 	injectDirs="$injectDirs -inject-dir=$i/plugins"
+	# Set some plugin dirs
+	if [[ $i = *"carmenPlugins"* ]]; then
+		carmenPluginsBuildDir="$i/plugins"
+	fi
+	if [[ $i = *"musicPlugins"* ]]; then
+		musicPluginsBuildDir="$i/plugins"
+	fi
 done
+echo $carmenPluginsBuildDir
+echo $musicPluginsBuildDir
 
 @dtk_DIR@/bin/dtkDeploy MUSIC.app $injectDirs &>/dev/null
 
@@ -50,6 +59,21 @@ do
 			install_name_tool -change $j @executable_path/../Frameworks/$j $f
 		fi
     done
+done
+
+# change library paths for qsqlite
+install_name_tool -change @executable_path/../Frameworks//usr/local/Cellar/qt/4.8.7_3/lib/QtSql.framework/Versions/4/QtSql @executable_path/../Frameworks/QtSql.framework/Versions/4/QtSql PlugIns/sqldrivers/libqsqlite.dylib
+install_name_tool -change @executable_path/../Frameworks//usr/local/Cellar/qt/4.8.7_3/lib/QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore PlugIns/sqldrivers/libqsqlite.dylib
+
+# change library paths for plugins
+for f in PlugIns/*.dylib
+do
+  install_name_tool -change $carmenPluginsBuildDir/libAAMeshInteractorPlugin.dylib @executable_path/../PlugIns/libAAMeshInteractorPlugin.dylib $f
+  install_name_tool -change $carmenPluginsBuildDir/libAAAMeshUtilityPlugin.dylib @executable_path/../PlugIns/libAAAMeshUtilityPlugin.dylib $f
+  install_name_tool -change $carmenPluginsBuildDir/libAAMFSSimulationPlugin.dylib @executable_path/../PlugIns/libAAMFSSimulationPlugin.dylib $f
+  install_name_tool -change $carmenPluginsBuildDir/libAAAEPMapPlugin.dylib @executable_path/../PlugIns/libAAAEPMapPlugin.dylib $f
+  install_name_tool -change $musicPluginsBuildDir/libAAAmedPipelinePlugin.dylib @executable_path/../PlugIns/libAAAmedPipelinePlugin.dylib $f
+  install_name_tool -change $musicPluginsBuildDir/libmscPipelinesPlugin.dylib @executable_path/../PlugIns/libmscPipelinesPlugin.dylib $f
 done
 
 # Remove useless plugins
