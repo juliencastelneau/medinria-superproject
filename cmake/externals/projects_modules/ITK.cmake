@@ -78,6 +78,9 @@ set(cmake_args
   -DModule_ITKIOPhilipsREC:BOOL=ON
   -DModule_ITKReview:BOOL=ON
   -DITK_SKIP_PATH_LENGTH_CHECKS:BOOL=ON
+  -DITK_WRAP_PYTHON:BOOL=ON
+  -DITK_LEGACY_SILENT:BOOL=ON
+  -DModule_BridgeNumPy:BOOL=ON
   )
 
 ## #############################################################################
