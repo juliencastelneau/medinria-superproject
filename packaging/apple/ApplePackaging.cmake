@@ -43,6 +43,10 @@ configure_file(${CMAKE_SOURCE_DIR}/packaging/apple/mac_packager.sh.in
   ${PROJECT_BINARY_DIR}/packaging/apple/mac_packager.sh
   )
 
+configure_file(${CMAKE_SOURCE_DIR}/packaging/apple/mac_post_build.sh.in 
+  ${PROJECT_BINARY_DIR}/packaging/apple/mac_post_build.sh
+  )
+
 set(CPACK_INSTALL_SCRIPT 
   ${PROJECT_BINARY_DIR}/packaging/apple/ApplePackScript.cmake
   )

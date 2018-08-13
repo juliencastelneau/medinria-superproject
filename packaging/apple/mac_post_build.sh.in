@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Usage: 
+# - mac_post_build.sh
+
+# This script is for developers only.
+# You must launch this script manually (with a custom step in QTCreator or in terminal)
+# at the end of the build process.
+# In release mode, this step is automatically processed at the time of packaging.
+
+cd @medInria_DIR@/bin/MUSIC.app/Contents
+
+rm -rf ITKWrapping
+lib_path='lib'
+py_path='Wrapping/Generators/Python'
+mkdir -p "ITKWrapping/$lib_path" "ITKWrapping/$py_path"
+
+#find "@ITK_DIR@/$lib_path" -name \*.so -exec cp {} "ITKWrapping/$lib_path" \;
+cp -rp "@ITK_DIR@/$lib_path/" "ITKWrapping/$lib_path" 
+cp -rp "@ITK_DIR@/$py_path/" "ITKWrapping/$py_path" 
+
+touch ITKWrapping/WrapITK.pth
+echo '# Python pth file to add WrapITK path to sys.path' > ITKWrapping/WrapITK.pth
+echo $lib_path >> ITKWrapping/WrapITK.pth
+echo $py_path >> ITKWrapping/WrapITK.pth
+
+cat ITKWrapping/WrapITK.pth
+

@@ -53,15 +53,13 @@ cp -p @QT_PLUGINS_DIR@/imageformats/libqsvg.dylib PlugIns/imageformats/libqsvg.d
 lib_path='lib'
 py_path='Wrapping/Generators/Python'
 mkdir -p "ITKWrapping/$lib_path" "ITKWrapping/$py_path"
-cp -p "@ITK_DIR@/$lib_path/*.so" "ITKWrapping/$lib_path" 
+cp -p "@ITK_DIR@/$lib_path/" "ITKWrapping/$lib_path" 
 cp -rp "@ITK_DIR@/$py_path/" "ITKWrapping/$py_path" 
 
 touch ITKWrapping/WrapITK.pth
 echo '# Python pth file to add WrapITK path to sys.path' > ITKWrapping/WrapITK.pth
 echo $lib_path >> ITKWrapping/WrapITK.pth
 echo $py_path >> ITKWrapping/WrapITK.pth
-
-cat ITKWrapping/WrapITK.pth
 
 for f in PlugIns/{sqldrivers/libqsqlite,imageformats/libqsvg}.dylib
 do
