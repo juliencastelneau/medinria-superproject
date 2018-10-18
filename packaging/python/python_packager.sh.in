@@ -1,0 +1,26 @@
+#!/bin/bash 
+
+for i in $*; do
+	echo $i
+	# Set some plugin dirs
+	if [[ $i = *"musicPlugins"* ]]; then
+		musicPythonInterpreterDir="$i/medPipeline/python/interpreter"
+	fi
+done
+echo $musicPythonInterpreterDir
+
+# copy python interpreter (the compressed one) 
+if [ ! -f $musicPythonInterpreterDir/music-py27.tar.gz ]; then
+
+	virtualenv --version
+	cd $musicPythonInterpreterDir
+	virtualenv -p /usr/bin/python2.7 music-py27
+	source music-py27/bin/activate
+	pip install -r requirements.txt
+	deactivate
+	tar -zcvf music-py27.tar.gz music-py27 
+fi
+
+cd @PROJECT_BINARY_DIR@
+mkdir -p python_interpreter
+cp -p $musicPythonInterpreterDir/music-py27.tar.gz python_interpreter/.

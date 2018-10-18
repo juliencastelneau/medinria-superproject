@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 # Usage: 
 # - mac_packager.sh plugin1 plugin2 ... pluginN
@@ -44,6 +44,10 @@ echo $musicPluginsBuildDir
 
 cd MUSIC.app/Contents
 
+mkdir -p python_interpreter
+cp -p @PROJECT_BINARY_DIR@/python_interpreter/music-py27.tar.gz python_interpreter/.
+
+
 mkdir -p PlugIns/sqldrivers PlugIns/imageformats
 
 cp -p @QT_PLUGINS_DIR@/sqldrivers/libqsqlite.dylib PlugIns/sqldrivers/libqsqlite.dylib
@@ -76,6 +80,7 @@ do
   install_name_tool -change $musicPluginsBuildDir/libmscPipelinesPlugin.dylib @executable_path/../PlugIns/libmscPipelinesPlugin.dylib $f
 done
 
+
 # Remove useless plugins
 \rm -fr PlugIns/{accessible,bearer,codecs,graphicssystems}
 
@@ -85,11 +90,13 @@ done
 cd @PROJECT_BINARY_DIR@
 gunzip -f MedinriaPackage.sparseimage.gz
 
+hdiutil resize -size 1G MedinriaPackage.sparseimage
 devName=`hdiutil attach -readwrite -noverify -noautoopen MedinriaPackage.sparseimage | egrep '^/dev/' | sed 1q | awk '{print $1}'`
 diskutil rename "medInria base" "MUSIC"
 \cp -rf @medInria_DIR@/bin/TmpInstall/MUSIC.app /Volumes/"MUSIC"/
 
 sync
 hdiutil detach $devName
+hdiutil compact MedinriaPackage.sparseimage
 hdiutil convert MedinriaPackage.sparseimage -format UDZO -imagekey zlib-level=9 -o "MUSIC-@medInria-superProject_VERSION@.dmg" 1>/dev/null 2>/dev/null
 \rm -fr MedinriaPackage.sparseimage @medInria_DIR@/bin/TmpInstall

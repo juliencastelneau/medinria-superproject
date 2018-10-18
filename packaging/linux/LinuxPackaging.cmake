@@ -49,6 +49,10 @@ set(CPACK_GENERATOR "ZIP")
 set(CURRENT_SRC_DIR ${CMAKE_SOURCE_DIR}/packaging/linux)
 set(CURRENT_BIN_DIR ${CMAKE_BINARY_DIR}/packaging/linux)
 
+# remember the python packaging source/bin dir
+set(PYTHON_SRC_DIR ${CMAKE_SOURCE_DIR}/packaging/python)
+set(PYTHON_BIN_DIR ${CMAKE_BINARY_DIR}/packaging/python)
+
 # Generate CPACK_PROJECT_CONFIG_FILE
 
 configure_file(${CURRENT_SRC_DIR}/GeneratorConfig.cmake.in
@@ -94,6 +98,20 @@ endforeach()
 foreach(dir ${PRIVATE_PLUGINS_DIRS})
         set(CPACK_INSTALL_CMAKE_PROJECTS ${CPACK_INSTALL_CMAKE_PROJECTS} ${dir} ${dir} ALL "/bin")
 endforeach()
+
+configure_file(${PYTHON_SRC_DIR}/PythonPackScript.cmake.in
+               ${PYTHON_BIN_DIR}/PythonPackScript.cmake
+               @ONLY)
+
+configure_file(${PYTHON_SRC_DIR}/python_packager.sh.in
+               ${PYTHON_BIN_DIR}/python_packager.sh
+               @ONLY)
+
+set(CPACK_INSTALL_SCRIPT 
+  ${PYTHON_BIN_DIR}/PythonPackScript.cmake
+  )
+
+install(DIRECTORY ${PROJECT_BINARY_DIR}/python_interpreter DESTINATION .)
 
 install(CODE "include(${CURRENT_BIN_DIR}/PostArchiveCleanupScript.cmake)")
 

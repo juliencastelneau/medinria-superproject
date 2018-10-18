@@ -27,6 +27,18 @@ set(CPACK_PACKAGE_FILE_NAME
 set(CPACK_GENERATOR "TGZ")
 
 ## #############################################################################
+## Add Python packaging script
+## #############################################################################
+configure_file(${CMAKE_SOURCE_DIR}/packaging/python/PythonPackScript.cmake.in 
+  ${PROJECT_BINARY_DIR}/packaging/python/PythonPackScript.cmake
+  @ONLY
+  )
+
+configure_file(${CMAKE_SOURCE_DIR}/packaging/python/python_packager.sh.in 
+  ${PROJECT_BINARY_DIR}/packaging/python/python_packager.sh
+  )
+
+## #############################################################################
 ## Add Apple packaging script
 ## #############################################################################
 
@@ -41,6 +53,14 @@ configure_file(
   
 configure_file(${CMAKE_SOURCE_DIR}/packaging/apple/mac_packager.sh.in 
   ${PROJECT_BINARY_DIR}/packaging/apple/mac_packager.sh
+  )
+
+configure_file(${CMAKE_SOURCE_DIR}/packaging/apple/mac_post_build.sh.in 
+  ${PROJECT_BINARY_DIR}/packaging/apple/mac_post_build.sh
+  )
+
+set(CPACK_INSTALL_SCRIPT 
+  ${PROJECT_BINARY_DIR}/packaging/python/PythonPackScript.cmake
   )
 
 set(CPACK_INSTALL_SCRIPT 
