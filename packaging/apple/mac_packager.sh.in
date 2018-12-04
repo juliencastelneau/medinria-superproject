@@ -27,7 +27,6 @@ cd TmpInstall
 #Run sub-packagers
 injectDirs=''
 for i in $*; do
-	echo $i
 	injectDirs="$injectDirs -inject-dir=$i/plugins"
 	# Set some plugin dirs
 	if [[ $i = *"carmenPlugins"* ]]; then
@@ -37,8 +36,6 @@ for i in $*; do
 		musicPluginsBuildDir="$i/plugins"
 	fi
 done
-echo $carmenPluginsBuildDir
-echo $musicPluginsBuildDir
 
 @dtk_DIR@/bin/dtkDeploy MUSIC.app $injectDirs &>/dev/null
 
@@ -83,7 +80,6 @@ done
 
 # Remove useless plugins
 \rm -fr PlugIns/{accessible,bearer,codecs,graphicssystems}
-
 #Run fancy packaging apple script
 
 \cp -f @medInria_SOURCE_DIR@/utils/osx_packaging/BaseMedinriaPackage.sparseimage.gz @PROJECT_BINARY_DIR@/MedinriaPackage.sparseimage.gz

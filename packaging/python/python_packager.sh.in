@@ -1,13 +1,11 @@
 #!/bin/bash 
 
 for i in $*; do
-	echo $i
 	# Set some plugin dirs
 	if [[ $i = *"musicPlugins"* ]]; then
 		musicPythonInterpreterDir="$i/medPipeline/python/interpreter"
 	fi
 done
-echo $musicPythonInterpreterDir
 
 # copy python interpreter (the compressed one) 
 if [ ! -f $musicPythonInterpreterDir/music-py27.tar.gz ]; then
