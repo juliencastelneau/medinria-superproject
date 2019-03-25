@@ -14,7 +14,7 @@ if [ ! -f $musicPythonInterpreterDir/music-py27.tar.gz ]; then
 	cd $musicPythonInterpreterDir
 	virtualenv -p /usr/bin/python2.7 music-py27
 	source music-py27/bin/activate
-	pip install -r requirements.txt
+	pip --no-cache-dir install -r requirements.txt
 	deactivate
 	tar -zcvf music-py27.tar.gz music-py27 
 fi
