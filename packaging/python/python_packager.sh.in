@@ -1,24 +1,70 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
-for i in $*; do
-	# Set some plugin dirs
-	if [[ $i = *"musicPlugins"* ]]; then
-		musicPythonInterpreterDir="$i/medPipeline/python/interpreter"
-	fi
-done
-
-# copy python interpreter (the compressed one) 
-if [ ! -f $musicPythonInterpreterDir/music-py27.tar.gz ]; then
-
-	virtualenv --version
-	cd $musicPythonInterpreterDir
-	virtualenv -p /usr/bin/python2.7 music-py27
-	source music-py27/bin/activate
-	pip install -r requirements.txt
-	deactivate
-	tar -zcvf music-py27.tar.gz music-py27 
-fi
+pwd
 
 cd @PROJECT_BINARY_DIR@
 mkdir -p python_interpreter
-cp -p $musicPythonInterpreterDir/music-py27.tar.gz python_interpreter/.
+
+MUSIC_LEARNING_DIR=@PROJECT_BINARY_DIR@/../../music-learning
+
+if [ ! -z "$MUSIC_LEARNING_DIR" ]; then
+	cd $MUSIC_LEARNING_DIR
+	zip -r ventriclesegmentation.zip ventriclesegmentation
+	if [ "$?" != "0" ]; then
+		printf "[Warning] unable to compress ventriclesegmentation repository. It will be not available in package" 
+	else
+		mv ventriclesegmentation.zip @PROJECT_BINARY_DIR@/python_interpreter/.
+	fi
+	zip -r afct.zip afct
+	if [ "$?" != "0" ]; then
+		printf "[Warning] unable to compress afct repository. It will be not available in package" 
+	else
+		mv afct.zip @PROJECT_BINARY_DIR@/python_interpreter/.
+	fi
+else
+	echo "music-learning directory does not exists."
+fi
+
+cd @PROJECT_BINARY_DIR@
+
+VTK_DIR=@PROJECT_BINARY_DIR@/../../python-packages/vtk-5.10.1/
+VTK_BIN_DIR=$VTK_DIR/bin
+OSTYPE="`uname`"
+
+if [ ! -z "$VTK_DIR" ]; then
+	if [ "$OSTYPE" = "Darwin" ]; then
+		cd $VTK_BIN_DIR
+		for f in *.so
+		do
+			for j in $( otool -L $f  | sed "1d" | grep -E .dylib | grep -i -E 'vtk' | cut -d " " -f 1 ); do
+				tmpVal=`echo $j | rev | cut -d "/" -f 1 | rev`
+				if [ "`echo $j | grep executable_path`" == "" ]; then
+					install_name_tool -change $j @executable_path/../Frameworks/$tmpVal $f
+				fi
+		    done	
+			for j in $( otool -L $f | sed "1d" | grep -E .framework | grep -i -E 'Qt|phonon' | cut -d " " -f 1 ); do
+				k=$(echo $(sed 's/\(\.framework\).*/\1/' <<<$j) | rev | cut -d/ -f1 | rev)
+				l=$(awk -F'\\.framework' '{print $2}' <<< $j)
+				if [ "`echo $j | grep executable_path`" == "" ]; then
+					install_name_tool -change $j @executable_path/../Frameworks/$k$l $f
+				fi
+			done
+		
+		done
+	fi
+	cd "$VTK_DIR"
+	zip -r vtk-5.10.1.zip .
+	if [ "$?" != "0" ]; then
+		printf "[Warning] unable to compress vtk python wrapping directory. It will be not available in package" 
+	else
+		mv vtk-5.10.1.zip @PROJECT_BINARY_DIR@/python_interpreter/.
+	fi
+else
+	echo "you must build vtk with python wrapping enabled."
+fi
+
+cd @PROJECT_BINARY_DIR@
+cd python_interpreter
+curl --location --output virtualenv-16.4.3.tar.gz https://github.com/pypa/virtualenv/tarball/16.4.3
+
+cd @PROJECT_BINARY_DIR@
