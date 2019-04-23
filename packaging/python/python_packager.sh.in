@@ -24,13 +24,14 @@ else
 	echo "music-learning directory does not exists."
 fi
 
-# Get vtk-5.10.1 python module from music-utilities repository
-# And add it in MUSIC binary
-# Change dynamic shared library install names for embedded *.so in modules
+# 1) Change dynamic shared library install names for embedded *.so in modules
 # Only useful for macosx
+# 2) Generate vtk-5.10.1 python module from VTK Wrapping build directory (wheel)
+# 3) And add it in MUSIC binary
 cd @PROJECT_BINARY_DIR@
-VTK_DIR=@PROJECT_BINARY_DIR@/../../python-packages/vtk-5.10.1/
-VTK_BIN_DIR=$VTK_DIR/bin
+VTK_BUILD_DIR=@PROJECT_BINARY_DIR@/VTK/build
+VTK_WRAP_DIR=$VTK_BUILD_DIR/Wrapping/Python
+VTK_BIN_DIR=$VTK_BUILD_DIR/bin
 OSTYPE="`uname`"
 if [ ! -z "$VTK_DIR" ]; then
 	if [ "$OSTYPE" = "Darwin" ]; then
@@ -53,12 +54,13 @@ if [ ! -z "$VTK_DIR" ]; then
 		
 		done
 	fi
-	cd "$VTK_DIR"
-	zip -r vtk-5.10.1.zip .
+	cd "$VTK_WRAP_DIR"
+	python setup.py bdist_wheel
 	if [ "$?" != "0" ]; then
-		printf "[Warning] unable to compress vtk python wrapping directory. It will be not available in package" 
+		printf "[Warning] unable to generate vtk python package (wheel). It will be not available in package" 
 	else
-		mv vtk-5.10.1.zip @PROJECT_BINARY_DIR@/python_interpreter/.
+		cd dist
+		mv VTK-5.10.1-*.whl @PROJECT_BINARY_DIR@/python_interpreter/vtk-5.10.1.whl
 	fi
 else
 	echo "you must build vtk with python wrapping enabled."
