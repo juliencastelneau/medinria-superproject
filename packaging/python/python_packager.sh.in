@@ -1,12 +1,11 @@
 #!/bin/bash -e
 
-pwd
-
 cd @PROJECT_BINARY_DIR@
 mkdir -p python_interpreter
 
+# Get afct & ventriclesegmentation python modules from music-learning gitlab repo
+# And add them in MUSIC binary
 MUSIC_LEARNING_DIR=@PROJECT_BINARY_DIR@/../../music-learning
-
 if [ ! -z "$MUSIC_LEARNING_DIR" ]; then
 	cd $MUSIC_LEARNING_DIR
 	zip -r ventriclesegmentation.zip ventriclesegmentation
@@ -25,12 +24,14 @@ else
 	echo "music-learning directory does not exists."
 fi
 
+# Get vtk-5.10.1 python module from music-utilities repository
+# And add it in MUSIC binary
+# Change dynamic shared library install names for embedded *.so in modules
+# Only useful for macosx
 cd @PROJECT_BINARY_DIR@
-
 VTK_DIR=@PROJECT_BINARY_DIR@/../../python-packages/vtk-5.10.1/
 VTK_BIN_DIR=$VTK_DIR/bin
 OSTYPE="`uname`"
-
 if [ ! -z "$VTK_DIR" ]; then
 	if [ "$OSTYPE" = "Darwin" ]; then
 		cd $VTK_BIN_DIR
