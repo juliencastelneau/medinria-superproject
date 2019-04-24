@@ -109,6 +109,7 @@ set(cmake_args
   -DFFMPEG_swscale_LIBRARY:STRING=${CMAKE_CURRENT_SOURCE_DIR}/build/ffmpeg/build/lib/libswscale.${extention}
   -DVTK_WRAP_PYTHON:BOOL=ON
   -DVTK_USE_TK:BOOL=OFF
+  -DVTK_INSTALL_NO_PYTHON:BOOL=ON
   )
 endif()
   
