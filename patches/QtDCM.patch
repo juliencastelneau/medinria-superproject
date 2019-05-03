@@ -1,13 +1,27 @@
-From 8b57c2bf6fc7ca13d6fc58ec7affd9aa97b5a6c8 Mon Sep 17 00:00:00 2001
-From: mathildemerle <mathilde.merle@ihu-liryc.fr>
-Date: Thu, 24 Jan 2019 14:32:40 +0100
+From a4ddf366ef6e09d763b18dce264f11acbf7eb58b Mon Sep 17 00:00:00 2001
+From: Julien Castelneau <julien.castelneau@ihu-liryc.fr>
+Date: Fri, 3 May 2019 15:23:05 +0200
 Subject: [PATCH] QtDCM
 
 ---
+ CMake/FindDCMTK.cmake |  2 +-
  Code/CMakeLists.txt   |  2 ++
  Code/QtDcmMoveScu.cpp | 10 +++++-----
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/CMake/FindDCMTK.cmake b/CMake/FindDCMTK.cmake
+index c6e6ffd..03c84c6 100644
+--- a/CMake/FindDCMTK.cmake
++++ b/CMake/FindDCMTK.cmake
+@@ -140,7 +140,7 @@ endforeach()
+ 
+ 
+ if(WIN32)
+-  list(APPEND DCMTK_LIBRARIES netapi32 wsock32)
++  list(APPEND DCMTK_LIBRARIES iphlpapi ws2_32 netapi32 wsock32)
+ endif()
+ 
+ if(DCMTK_ofstd_INCLUDE_DIR)
 diff --git a/Code/CMakeLists.txt b/Code/CMakeLists.txt
 index 7a51a72..c4a8227 100644
 --- a/Code/CMakeLists.txt
@@ -78,6 +92,5 @@ index d6ea6fe..2ad049d 100644
          }
      }
 -- 
-2.7.4
-
+2.17.2 (Apple Git-113)
 
