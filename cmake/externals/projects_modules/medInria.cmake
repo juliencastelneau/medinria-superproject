@@ -70,7 +70,7 @@ endif()
 ## Add specific cmake arguments for configuration step of the project
 ## #############################################################################
 
-if(CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(${ep}_cxx_flags "${${ep}_cxx_flags} -Wno-inconsistent-missing-override")
 endif()
 
@@ -89,8 +89,6 @@ set(cmake_args
   -DRPI_DIR:FILEPATH=${RPI_DIR}
   -DTTK_DIR:FILEPATH=${TTK_DIR}
   -DVTK_DIR:FILEPATH=${VTK_DIR}
-  -DBOOST_ROOT:PATH=${BOOST_ROOT}
-  -DMEDINRIA-PLUGINS_BUILD_TOOLS:BOOL=ON
   -DMEDINRIA_VERSION_MAJOR:STRING=${${PROJECT_NAME}_VERSION_MAJOR}
   -DMEDINRIA_VERSION_MINOR:STRING=${${PROJECT_NAME}_VERSION_MINOR}
   -DMEDINRIA_VERSION_PATCH:STRING=${${PROJECT_NAME}_VERSION_PATCH}
